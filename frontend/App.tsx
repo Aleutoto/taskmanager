@@ -9,31 +9,31 @@ type Task = {
 
 const TaskManager: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTaskName, setNewTaskName] = useState('');
-  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [taskNameInput, setTaskNameInput] = useState('');
+  const [taskDescriptionInput, setTaskDescriptionInput] = useState('');
 
-  const handleAddTask = () => {
+  const addTask = () => {
     const newTask: Task = {
       id: tasks.length + 1,
-      name: newTaskName,
-      description: newTaskDescription,
+      name: taskNameInput,
+      description: taskDescriptionInput,
       completed: false,
     };
-    setTasks([...tasks, newTask]);
-    setNewTaskName('');
-    setNewTaskDescription('');
+    setTasks(previousTasks => [...previousTasks, newTask]);
+    setTaskNameInput('');
+    setTaskDescriptionInput('');
   };
 
-  const handleCompleteTask = (taskId: number) => {
+  const toggleTaskCompletionStatus = (taskId: number) => {
     const updatedTasks = tasks.map(task =>
       task.id === taskId ? { ...task, completed: !task.completed } : task,
     );
     setTasks(updatedTasks);
   };
 
-  const handleDeleteTask = (taskId: number) => {
-    const updatedTasks = tasks.filter(task => task.id !== taskId);
-    setTasks(updatedTasks);
+  const deleteTask = (taskId: number) => {
+    const remainingTasks = tasks.filter(task => task.id !== taskId);
+    setTasks(remainingTasks);
   };
 
   return (
@@ -43,26 +43,26 @@ const TaskManager: React.FC = () => {
         <input
           type="text"
           placeholder="Task name"
-          value={newTaskName}
-          onChange={e => setNewTaskName(e.target.value)}
+          value={taskNameInput}
+          onChange={e => setTaskNameInput(e.target.value)}
         />
         <input
           type="text"
           placeholder="Task description"
-          value={newTaskDescription}
-          onChange={e => setNewTaskDescription(e.target.value)}
+          value={taskDescriptionInput}
+          onChange={e => setTaskDescriptionInput(e.target.value)}
         />
-        <button onClick={handleAddTask}>Add Task</button>
+        <button onClick={addTask}>Add Task</button>
       </div>
       <ul>
         {tasks.map((task) => (
           <li key={task.id}>
             <h3>{task.name}</h3>
             <p>{task.description}</p>
-            <button onClick={() => handleCompleteTask(task.id)}>
+            <button onClick={() => toggleTaskCompletionStatus(task.id)}>
               {task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
             </button>
-            <button onClick={() => handleDeleteTask(task.id)}>
+            <button onClick={() => deleteTask(task.id)}>
               Delete
             </button>
           </li>
