@@ -11,10 +11,22 @@ const TaskManager: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [taskNameInput, setTaskNameInput] = useState('');
   const [taskDescriptionInput, setTaskDescriptionInput] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const generateId = (): number => {
+    return tasks.length > 0 ? Math.max(...tasks.map((task) => task.id)) + 1 : 1;
+  };
 
   const addTask = () => {
+    if (!taskNameInput.trim() || !taskDescriptionInput.trim()) {
+      setErrorMessage('Task name and description are required to add a task.');
+      return;
+    } else {
+      setErrorMessage('');
+    }
+
     const newTask: Task = {
-      id: tasks.length + 1,
+      id: generateId(),
       name: taskNameInput,
       description: taskDescriptionInput,
       completed: false,
@@ -39,6 +51,11 @@ const TaskManager: React.FC = () => {
   return (
     <div>
       <h2>Task Manager</h2>
+      {errorMessage && (
+        <div style={{ color: 'red' }}>
+          {errorMessage}
+        </div>
+      )}
       <div>
         <input
           type="text"
