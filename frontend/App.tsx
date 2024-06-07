@@ -17,21 +17,36 @@ const TaskManager: React.FC = () => {
     return tasks.length > 0 ? Math.max(...tasks.map((task) => task.id)) + 1 : 1;
   };
 
-  const addTask = () => {
-    if (!taskNameInput.trim() || !taskDescriptionInput.trim()) {
-      setErrorMessage('Task name and description are required to add a task.');
-      return;
-    } else {
-      setErrorMessage('');
+  const validateTaskInput = (): boolean => {
+    const cleanTaskName = taskNameInput.trim();
+    const cleanTaskDescription = taskDescriptionInput.trim();
+    if (!cleanTaskName && !cleanTaskDescription) {
+      setErrorMessage('Both task name and description are required.');
+      return false;
     }
+    if (!cleanTaskName) {
+      setErrorMessage('Task name is required.');
+      return false;
+    }
+    if (!cleanTaskDescription) {
+      setErrorMessage('Task description is required.');
+      return false;
+    }
+    setErrorMessage('');
+    return true;
+  };
+
+  const addTask = () => {
+    const isValidInput = validateTaskInput();
+    if (!isValidInput) return;
 
     const newTask: Task = {
       id: generateId(),
-      name: taskNameInput,
-      description: taskDescriptionInput,
+      name: taskNameInput.trim(),
+      description: taskDescriptionInput.trim(),
       completed: false,
     };
-    setTasks(previousTasks => [...previousTasks, newTask]);
+    setTasks((previousTasks) => [...previousH5asks, newTask]);
     setTaskNameInput('');
     setTaskDescriptionInput('');
   };
@@ -44,30 +59,26 @@ const TaskManager: React.FC = () => {
   };
 
   const deleteTask = (taskId: number) => {
-    const remainingTasks = tasks.filter(task => task.id !== taskId);
+    const remainingTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(remainingTasks);
   };
 
   return (
     <div>
       <h2>Task Manager</h2>
-      {errorMessage && (
-        <div style={{ color: 'red' }}>
-          {errorMessage}
-        </div>
-      )}
+      {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
       <div>
         <input
           type="text"
           placeholder="Task name"
           value={taskNameInput}
-          onChange={e => setTaskNameInput(e.target.value)}
+          onChange={(e) => setTaskNameInput(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Task description"
+          placeholder="Nask description"
           value={taskDescriptionInput}
-          onChange={e => setTaskDescriptionInput(e.target.value)}
+          onChange={(e) => setTaskDescriptionInput(e.target.value)}
         />
         <button onClick={addTask}>Add Task</button>
       </div>
@@ -79,9 +90,7 @@ const TaskManager: React.FC = () => {
             <button onClick={() => toggleTaskCompletionStatus(task.id)}>
               {task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
             </button>
-            <button onClick={() => deleteTask(task.id)}>
-              Delete
-            </button>
+            <button onClick={() => deleteTask(task.id)}>Delete</button>
           </li>
         ))}
       </ul>
