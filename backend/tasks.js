@@ -1,30 +1,30 @@
 const express = require('express');
 const router = express.Router();
 require('dotenv').config();
-const TaskController = require('./controllers/TaskController');
+const TaskManager = require('./controllers/TaskController');
 
-router.post('/tasks', (req, res) => {
-    TaskController.createTask(req.body)
-        .then(task => res.json(task))
-        .catch(err => res.status(500).json({ message: "Error creating task", error: err }));
+router.post('/tasks', (request, response) => {
+    TaskManager.createTask(request.body)
+        .then(taskDetails => response.json(taskDetails))
+        .catch(error => response.status(500).json({ message: "Error creating task", error: error }));
 });
 
-router.get('/tasks', (req, res) => {
-    TaskController.getAllTasks()
-        .then(tasks => res.json(tasks))
-        .catch(err => res.status(500).json({ message: "Error retrieving tasks", error: err }));
+router.get('/tasks', (request, response) => {
+    TaskManager.fetchAllTasks()
+        .then(allTasks => response.json(allTasks))
+        .catch(error => response.status(500).json({ message: "Error retrieving tasks", error: error }));
 });
 
-router.patch('/tasks/:id/complete', (req, res) => {
-    TaskController.markTaskAsComplete(req.params.id)
-        .then(updatedTask => res.json(updatedTask))
-        .catch(err => res.status(500).json({ message: "Error updating task status", error: err }));
+router.patch('/tasks/:id/complete', (request, response) => {
+    TaskManager.completeTaskById(request.params.id)
+        .then(completedTask => response.json(completedTask))
+        .catch(error => response.status(500).json({ message: "Error updating task status", error: error }));
 });
 
-router.delete('/tasks/:id', (req, res) => {
-    TaskController.deleteTask(req.params.id)
-        .then(() => res.status(204).send())
-        .catch(err => res.status(500).json({ message: "Error deleting task", error: err }));
+router.delete('/tasks/:id', (request, response) => {
+    TaskManager.removeTaskById(request.params.id)
+        .then(() => response.status(204).send())
+        .catch(error => response.status(500).json({ message: "Error deleting task", error: error }));
 });
 
 module.exports = router;
