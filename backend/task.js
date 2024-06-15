@@ -1,19 +1,24 @@
 require('dotenv').config();
-class Task {
-    constructor(name, description, isComplete = false) {
-        this.name = name;
-        this.description = description;
-        this.isComplete = isComplete;
+
+class TaskManager {
+    constructor(taskTitle, taskDetails, isTaskComplete = false) {
+        this.taskTitle = taskTitle;
+        this.taskDetails = taskDetails;
+        this.isTaskComplete = isTaskComplete;
     }
-    markComplete() {
-        this.isComplete = true;
+
+    setTaskCompleted() {
+        this.isTaskComplete = true;
     }
-    updateDescription(newDescription) {
-        this.description = newDescription;
+
+    updateTaskDetails(newDetails) {
+        this.taskDetails = newDetails;
     }
-    displayTask() {
-        console.log(`Task: ${this.name} - ${this.description} [${this.isComplete ? 'Complete' : 'Incomplete'}]`);
+
+    displayCurrentTaskStatus() {
+        console.log(`Task: ${this.taskTitle} - ${this.taskDetails} [${this.isTaskComplete ? 'Complete' : 'Incomplete'}]`);
     }
 }
-const task1 = new Task(process.env.TASK_NAME, process.env.TASK_DESCRIPTION);
-task1.displayTask();
+
+const initialTask = new TaskManager(process.env.TASK_NAME, process.env.TASK_DESCRIPTION);
+initialTask.displayCurrentTaskStatus();
